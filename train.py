@@ -27,7 +27,7 @@ model = SignalSeparator(params.N)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 criterion = nn.MSELoss()
 
-epochs = 2000
+epochs = 1000
 log_period = 50
 
 for epoch in range(epochs):

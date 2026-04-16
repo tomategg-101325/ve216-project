@@ -43,28 +43,30 @@ rounds = 1000
 for i in range(rounds):
     current_time, sampled_signal, plot_times, plot_s1, plot_s2, a1, a2 = simulation_step(current_time, sampled_signal, plot_times, plot_s1, plot_s2)
 
-print('Simulation completed!')
-print(f'A1 = {a1:.3f}\nA2 = {a2:.3f}')
-
-# Plotting
 plot_s1_ref = funcs.get_s1(A1, plot_times) # get reference waveform
 plot_s2_ref = funcs.get_s2(A2, plot_times)
+s1_stdev = np.sqrt(np.sum((plot_s1 - plot_s1_ref) ** 2) / params.N)
+s2_stdev = np.sqrt(np.sum((plot_s2 - plot_s2_ref) ** 2) / params.N)
 
+print('Simulation completed!')
+print(f'A1 = {a1:.3f}\nA2 = {a2:.3f}\n\nSignal 1 stdev = {s1_stdev:.6f}\nSignal 2 stdev = {s2_stdev:.6f}')
+
+# Plotting
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True)
 
 ax1.plot(plot_times*1e6, plot_s1_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle='dashed', label='reference')
-ax1.plot(plot_times*1e6, plot_s1, color=(1.0, 0.2, 0.2), linewidth=1, label='separated signal')
+ax1.plot(plot_times*1e6, plot_s1, color=(1.0, 0.2, 0.2), linewidth=1, label=f'output (estimated A1 = {a1:.3f})')
 ax2.plot(plot_times*1e6, plot_s2_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle='dashed', label='reference')
-ax2.plot(plot_times*1e6, plot_s2, color=(0.05, 0.75, 0.3), linewidth=1, label='separated signal')
+ax2.plot(plot_times*1e6, plot_s2, color=(0.05, 0.75, 0.3), linewidth=1, label=f'output (estimated A2 = {a2:.3f})')
 
-ax1.set_title(f'A1 = {A1:.3f}, f = {params.f / 1000} kHz')
-ax2.set_title(f'A2 = {A2:.3f}, f = {(params.f+params.df) / 1000} kHz')
-ax1.legend(loc='lower right')
-ax2.legend(loc='lower right')
+ax1.set_title(f'{params.f / 1000} kHz component')
+ax2.set_title(f'{(params.f+params.df) / 1000} kHz component')
+ax1.legend(loc='lower right', fontsize='small')
+ax2.legend(loc='lower right', fontsize='small')
 
 ax1.set_ylabel('amplitude')
 ax2.set_ylabel('amplitude')
 ax2.set_xlabel('time (us)')
 
-plt.savefig('separator_simulation.png', dpi=300)
+plt.savefig(f'ai-amp-{A1:.1f}-{A2:.1f}-noise-{random_size:.1f}.png', dpi=300)
 
