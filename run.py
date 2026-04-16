@@ -52,12 +52,15 @@ plot_s2_ref = funcs.get_s2(A2, plot_times)
 
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True)
 
-ax1.plot(plot_times*1e6, plot_s1_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle = 'dashed')
-ax1.plot(plot_times*1e6, plot_s1, color=(1.0, 0.2, 0.2), linewidth=1)
-ax2.plot(plot_times*1e6, plot_s2_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle = 'dashed')
-ax2.plot(plot_times*1e6, plot_s2, color=(0.05, 0.75, 0.3), linewidth=1)
+ax1.plot(plot_times*1e6, plot_s1_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle='dashed', label='reference')
+ax1.plot(plot_times*1e6, plot_s1, color=(1.0, 0.2, 0.2), linewidth=1, label='separated signal')
+ax2.plot(plot_times*1e6, plot_s2_ref, color=(0.5, 0.5, 0.5), linewidth=2, linestyle='dashed', label='reference')
+ax2.plot(plot_times*1e6, plot_s2, color=(0.05, 0.75, 0.3), linewidth=1, label='separated signal')
+
 ax1.set_title(f'A1 = {A1:.3f}, f = {params.f / 1000} kHz')
 ax2.set_title(f'A2 = {A2:.3f}, f = {(params.f+params.df) / 1000} kHz')
+ax1.legend(loc='lower right')
+ax2.legend(loc='lower right')
 
 ax1.set_ylabel('amplitude')
 ax2.set_ylabel('amplitude')
