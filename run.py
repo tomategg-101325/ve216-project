@@ -15,9 +15,9 @@ model.eval()
 # Generate test data
 A1, A2 = float(input('A1 = ')), float(input('A2 = '))
 current_time = params.N / params.fs
-random_size = float(input('Noise level: ')) # add noise to simulate reality
+random_size = float(input('Noise level: ')) # add gaussian noise
 starting_t = (1 + np.arange(params.N)) / params.fs
-sampled_signal = funcs.get_s1(A1, starting_t) + funcs.get_s2(A2, starting_t) + np.random.uniform(-random_size, random_size, size=params.N)
+sampled_signal = funcs.get_s1(A1, starting_t) + funcs.get_s2(A2, starting_t) + np.random.normal(0.0, random_size, size=params.N)
 
 plot_times = np.array([]);
 plot_s1 = np.array([]);
@@ -34,7 +34,7 @@ def simulation_step(current_time, sampled_signal, plot_times, plot_s1, plot_s2):
     # sliding window of sampled signal
     next_time = current_time + 1/params.fs
     next_sampled_signal = np.delete(sampled_signal, 0)
-    next_sampled_signal = np.append(next_sampled_signal, [funcs.get_s1(A1, next_time) + funcs.get_s2(A2, next_time) + np.random.uniform(-random_size, random_size)])
+    next_sampled_signal = np.append(next_sampled_signal, [funcs.get_s1(A1, next_time) + funcs.get_s2(A2, next_time) + np.random.normal(0.0, random_size)])
 
     return next_time, next_sampled_signal, next_plot_times, next_plot_s1, next_plot_s2, a1, a2
 

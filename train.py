@@ -7,13 +7,13 @@ import global_functions as funcs
 from separator_model import SignalSeparator
 
 # Generate training batch
-def generate_batch(batch_size):
+def generate_batch(batch_size, noise_level=0.0):
     t0 = np.random.uniform(0, params.T_beat, size=(batch_size, 1))
     A1 = np.random.uniform(0.01, 1, size=(batch_size, 1))
     A2 = np.random.uniform(0.01, 1, size=(batch_size, 1))
     
     t = t0 + np.arange(params.N) / params.fs   # shape (batch_size, N)
-    y = funcs.get_s1(A1, t) + funcs.get_s2(A2, t)
+    y = funcs.get_s1(A1, t) + funcs.get_s2(A2, t) + np.random.normal(0.0, noise_level, size=params.N)
     
     t_ref = t0 + (params.N - 1) / params.fs   # end of window to maintain causality
     s1 = funcs.get_s1(A1, t_ref)
@@ -27,11 +27,11 @@ model = SignalSeparator(params.N)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 criterion = nn.MSELoss()
 
-epochs = 1000
+epochs = 2000
 log_period = 50
 
 for epoch in range(epochs):
-    x, y_true = generate_batch(256)
+    x, y_true = generate_batch(256, noise_level=0.02)
     y_pred = model(x)
     loss = criterion(y_pred, y_true)
     optimizer.zero_grad()
